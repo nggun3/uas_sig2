@@ -1,0 +1,32 @@
+{
+"type": "FeatureCollection",
+"name": "faskes_ntb",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "nama": "RSUD Provinsi NTB", "jenis": "Rumah Sakit", "alamat": "Kota Mataram Nusa Tenggara Barat", "lat": -8.7683674, "lon": 114.813302 }, "geometry": { "type": "Point", "coordinates": [ 114.813302, -8.7683674 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Kota Mataram", "jenis": "Rumah Sakit", "alamat": "Kota Mataram Nusa Tenggara Barat", "lat": -8.5998276, "lon": 116.0951348 }, "geometry": { "type": "Point", "coordinates": [ 116.0951348, -8.5998276 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Patut Patuh Patju", "jenis": "Rumah Sakit", "alamat": "Gerung Lombok Barat NTB", "lat": -8.6832411, "lon": 116.1214767 }, "geometry": { "type": "Point", "coordinates": [ 116.1214767, -8.6832411 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Praya", "jenis": "Rumah Sakit", "alamat": "Praya Lombok Tengah NTB", "lat": -8.7022435, "lon": 116.2925074 }, "geometry": { "type": "Point", "coordinates": [ 116.2925074, -8.7022435 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Selong", "jenis": "Rumah Sakit", "alamat": "Selong Lombok Timur NTB", "lat": -8.650472461, "lon": 116.5284543 }, "geometry": { "type": "Point", "coordinates": [ 116.5284543, -8.650472461 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Tanjung", "jenis": "Rumah Sakit", "alamat": "Tanjung Lombok Utara NTB", "lat": -8.354970582, "lon": 116.1599503 }, "geometry": { "type": "Point", "coordinates": [ 116.1599503, -8.354970582 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Sumbawa", "jenis": "Rumah Sakit", "alamat": "Sumbawa Besar NTB", "lat": -8.465612399, "lon": 117.4220481 }, "geometry": { "type": "Point", "coordinates": [ 117.4220481, -8.465612399 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Dompu", "jenis": "Rumah Sakit", "alamat": "Dompu NTB", "lat": -8.540527663000001, "lon": 118.464931 }, "geometry": { "type": "Point", "coordinates": [ 118.464931, -8.540527663 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Kabupaten Bima", "jenis": "Rumah Sakit", "alamat": "Woha Kabupaten Bima NTB", "lat": -8.586392406, "lon": 118.6969823 }, "geometry": { "type": "Point", "coordinates": [ 118.6969823, -8.586392406 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Kota Bima", "jenis": "Rumah Sakit", "alamat": "Kota Bima NTB", "lat": -8.448129214, "lon": 118.7329918 }, "geometry": { "type": "Point", "coordinates": [ 118.7329918, -8.448129214 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Alas", "jenis": "Rumah Sakit", "alamat": "Alas Sumbawa NTB", "lat": -8.482215891, "lon": 117.0005452 }, "geometry": { "type": "Point", "coordinates": [ 117.0005452, -8.482215891 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Manambae", "jenis": "Rumah Sakit", "alamat": "Taliwang Sumbawa Barat NTB", "lat": -8.531278249, "lon": 117.4476403 }, "geometry": { "type": "Point", "coordinates": [ 117.4476403, -8.531278249 ] } },
+{ "type": "Feature", "properties": { "nama": "RSUD Raba", "jenis": "Rumah Sakit", "alamat": "Raba Kota Bima NTB", "lat": -8.473505274000001, "lon": 118.7617918 }, "geometry": { "type": "Point", "coordinates": [ 118.7617918, -8.473505274 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Ampenan", "jenis": "Puskesmas", "alamat": "Ampenan Kota Mataram NTB", "lat": -8.56966402, "lon": 116.0768239 }, "geometry": { "type": "Point", "coordinates": [ 116.0768239, -8.56966402 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Cakranegara", "jenis": "Puskesmas", "alamat": "Cakranegara Kota Mataram NTB", "lat": -8.594581424, "lon": 116.1455871 }, "geometry": { "type": "Point", "coordinates": [ 116.1455871, -8.594581424 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Narmada", "jenis": "Puskesmas", "alamat": "Narmada Lombok Barat NTB", "lat": -8.604382765, "lon": 116.1727441 }, "geometry": { "type": "Point", "coordinates": [ 116.1727441, -8.604382765 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Gunungsari", "jenis": "Puskesmas", "alamat": "Gunungsari Lombok Barat NTB", "lat": -8.540006794, "lon": 116.0997679 }, "geometry": { "type": "Point", "coordinates": [ 116.0997679, -8.540006794 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Praya", "jenis": "Puskesmas", "alamat": "Praya Lombok Tengah NTB", "lat": -8.705493887, "lon": 116.2733799 }, "geometry": { "type": "Point", "coordinates": [ 116.2733799, -8.705493887 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Sengkol", "jenis": "Puskesmas", "alamat": "Pujut Lombok Tengah NTB", "lat": -8.801737311, "lon": 116.2933171 }, "geometry": { "type": "Point", "coordinates": [ 116.2933171, -8.801737311 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Selong", "jenis": "Puskesmas", "alamat": "Selong Lombok Timur NTB", "lat": -8.650191369, "lon": 116.5414553 }, "geometry": { "type": "Point", "coordinates": [ 116.5414553, -8.650191369 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Aikmel", "jenis": "Puskesmas", "alamat": "Aikmel Lombok Timur NTB", "lat": -8.568940046, "lon": 116.5329841 }, "geometry": { "type": "Point", "coordinates": [ 116.5329841, -8.568940046 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Kolo", "jenis": "Puskesmas", "alamat": " Asakota Kota Bima NTB", "lat": -8.368976219, "lon": 118.7199241 }, "geometry": { "type": "Point", "coordinates": [ 118.7199241, -8.368976219 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Sumbawa Besar", "jenis": "Puskesmas", "alamat": "Cenggu Kabupaten Bima NTB", "lat": -8.596392042, "lon": 118.7025752 }, "geometry": { "type": "Point", "coordinates": [ 118.7025752, -8.596392042 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Parado", "jenis": "Puskesmas", "alamat": "Parado Kabupaten Bima  NTB", "lat": -8.754795607, "lon": 118.5688916 }, "geometry": { "type": "Point", "coordinates": [ 118.5688916, -8.754795607 ] } },
+{ "type": "Feature", "properties": { "nama": "Puskesmas Monta", "jenis": "Puskesmas", "alamat": "Tangga Kabupaten Bima  NTB", "lat": -8.660603513, "lon": 118.6945875 }, "geometry": { "type": "Point", "coordinates": [ 118.6945875, -8.660603513 ] } }
+]
+}

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGIS Faskes NTB - Anggun Pertiwi</title>
+
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+      :root {
+        --navy: #0f172a;
+        --navy2: #0b1223;
+        --card: rgba(255, 255, 255, 0.92);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+        --shadow2: 0 6px 16px rgba(0, 0, 0, 0.16);
+        --radius: 16px;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #eef2ff;
+      }
+
+      /* ===== Header center ===== */
+      .header {
+        position: relative;
+        padding: 18px 18px 16px;
+        background: linear-gradient(135deg, #0f766e, #115e59);
+
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+        z-index: 2;
+      }
+
+      .banner {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        text-align: center; /* ✅ judul di tengah */
+        color: #fff;
+      }
+      .banner h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.2px;
+      }
+      .banner p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        opacity: 0.92;
+      }
+
+      #map {
+        height: calc(100vh - 96px);
+        width: 100%;
+      }
+
+      /* ===== Card/Panel ===== */
+      .box {
+        background: var(--card);
+        padding: 12px 14px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow2);
+        font-size: 13px;
+        line-height: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(6px);
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0;
+      }
+
+      .swatch {
+        width: 18px;
+        height: 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+
+      /* ===== North Arrow pakai gambar sendiri ===== */
+      .north-arrow-img {
+        background: rgba(255, 255, 255, 0.92);
+        width: 62px;
+        height: 62px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        backdrop-filter: blur(6px);
+        overflow: hidden;
+      }
+      .north-arrow-img img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        display: block;
+      }
+
+      /* ===== Popup ===== */
+      .popup-title {
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        color: #0f172a;
+      }
+      .popup-row {
+        margin: 3px 0;
+        color: #0f172a;
+      }
+      .pill {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-top: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+      }
+      .pill.rs {
+        background: rgba(239, 68, 68, 0.12);
+        color: #991b1b;
+      }
+      .pill.pus {
+        background: rgba(59, 130, 246, 0.12);
+        color: #1d4ed8;
+      }
+      .popup-btn {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 10px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        font-weight: 700;
+        text-decoration: none;
+        color: #0f172a;
+      }
+      .popup-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      /* ===== Legend Icons ===== */
+      .legend-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: #fff;
+        object-fit: cover;
+      }
+
+      /* ===== Leaflet control beautify ===== */
+      .leaflet-control-layers {
+        border-radius: 14px !important;
+        overflow: hidden;
+        box-shadow: var(--shadow2);
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      .leaflet-control-layers-expanded {
+        padding: 10px 12px !important;
+        background: var(--card) !important;
+        backdrop-filter: blur(6px);
+      }
+      .leaflet-control-zoom a {
+        border-radius: 10px !important;
+      }
+      .leaflet-control-scale {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      /* ===== Home Button ===== */
+      .home-btn {
+        background: var(--card);
+        padding: 8px 12px;
+        border-radius: 14px;
+        box-shadow: var(--shadow2);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        cursor: pointer;
+        font-weight: 800;
+        color: #0f172a;
+        user-select: none;
+      }
+      .home-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .leaflet-popup-content-wrapper {
+        border-radius: 16px !important;
+        box-shadow: var(--shadow) !important;
+        border: 1px solid rgba(15, 23, 42, 0.08) !important;
+      }
+      .leaflet-popup-tip {
+        box-shadow: none !important;
+      }
+
+      /* =========================================================
+               ✅ PANEL LEGENDA KIRI (JADI SATU)
+         - Kab/Kota + RS/Puskesmas + Batas Provinsi (di bawah)
+         - Panel dibuat lebih panjang dikit + scroll
+      ========================================================= */
+      .legend-panel {
+        background: rgba(202, 240, 240, 0.92);
+        border: 1px solid rgba(15, 23, 42, 0.1);
+        border-radius: 14px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        padding: 10px 8px;
+        width: 180px;
+
+        max-height: 55vh; /* batas tinggi */
+        overflow-y: auto; /* biar bisa scroll */
+      }
+
+      .legend-title-big {
+        font-size: 14px;
+        font-weight: 900;
+        letter-spacing: 0.4px;
+        line-height: 1.05;
+        color: #0b1223;
+        margin: 2px 0 8px;
+      }
+
+      /* holder list kab/kota -> bisa scroll & lebih tinggi */
+      #legendKabkotaBig {
+        max-height: 320px; /* ✅ lebih panjang */
+        overflow-y: auto;
+        padding-right: 4px;
+        margin-bottom: 8px;
+      }
+
+      #legendKabkotaBig::-webkit-scrollbar {
+        width: 6px;
+      }
+      #legendKabkotaBig::-webkit-scrollbar-thumb {
+        background: rgba(15, 23, 42, 0.25);
+        border-radius: 999px;
+      }
+
+      .legend-item-big {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 12px;
+        padding: 6px 8px;
+        margin: 4px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .legend-chip-big {
+        width: 12px;
+        height: 12px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        flex: 0 0 auto;
+      }
+
+      .legend-text-big {
+        font-size: 12px;
+        font-weight: 900;
+        color: #0b1223;
+      }
+
+      /* blok legenda faskes + batas (di bawah) */
+      .legend-subtitle {
+        font-size: 12px;
+        font-weight: 900;
+        color: #0b1223;
+        margin: 6px 0 6px;
+      }
+
+      .legend-row-mini {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 12px;
+        padding: 6px 8px;
+        margin: 5px 0;
+      }
+
+      .legend-reset-big {
+        margin-top: 8px;
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.25);
+        font-weight: 900;
+        font-size: 12px;
+        letter-spacing: 0.4px;
+        cursor: pointer;
+      }
+
+      /* =========================================================
+               ✅ DESKRIPSI FOOTER
+      ========================================================= */
+      #map {
+        height: calc(100vh - 96px - 74px);
+        width: 100%;
+      }
+
+      .desc-footer {
+        position: fixed;
+        left: 16px;
+        right: 16px;
+        bottom: 10px;
+        z-index: 9999;
+        max-width: 700px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(15, 23, 42, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+        padding: 8px 10px;
+        backdrop-filter: blur(10px);
+      }
+
+      .desc-footer h3 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 900;
+        color: #0b1223;
+      }
+
+      .desc-footer p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.35;
+        color: #0b1223;
+        opacity: 0.95;
+
+        display: -webkit-box;
+
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .desc-footer .meta {
+        margin-top: 6px;
+        font-size: 11px;
+        opacity: 0.8;
+      }
+
+      /* ✅ legend kanan bawah: disembunyikan biar ga dobel */
+      .leaflet-bottom.leaflet-right .box {
+        display: none !important;
+      }
+
+      @media (max-width: 480px) {
+        .legend-panel {
+          width: 170px;
+        }
+        #legendKabkotaBig {
+          max-height: 240px;
+        }
+        .north-arrow-img {
+          width: 54px;
+          height: 54px;
+        }
+        .north-arrow-img img {
+          width: 52px;
+          height: 52px;
+        }
+        #map {
+          height: calc(100vh - 96px - 78px);
+        }
+      }
+      /* Biar kontrol Leaflet (zoom/home) ga ketutup legenda */
+      .leaflet-top.leaflet-left {
+        top: 14px !important; /* biar rapih */
+      }
+
+      /* Geser panel legenda kiri agak turun */
+      .leaflet-bottom.leaflet-left .legend-panel {
+        margin-bottom: 20px; /* aman dari bawah */
+      }
+
+      /* ✅ INI YANG PENTING: kasih jarak dari atas supaya tombol zoom/home keliatan */
+      .legend-panel {
+        margin-top: 85px; /* coba 80-110 sesuai tampilan kamu */
+      }
+      /* Geser legenda ke kanan dikit biar ga nutup Home */
+      .leaflet-bottom.leaflet-left .legend-panel {
+        margin-left: 60px; /* 👉 geser ke tengah dikit */
+        margin-bottom: 10px; /* jarak dari bawah */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="banner">
+        <h1>
+          WebGIS 25 Titik Fasilitas Kesehatan (RS/Puskesmas) – Provinsi NTB
+        </h1>
+        <p>
+          Dibuat oleh: Anggun Pertiwi – 24611030 | Sumber data: Google Maps
+          (koordinat & alamat)
+        </p>
+      </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- ✅ Deskripsi versi footer -->
+    <div class="desc-footer" id="descFooter">
+      <h3>Deskripsi Peta</h3>
+      <p id="descText">Memuat deskripsi...</p>
+      <div class="meta" id="descMeta"></div>
+    </div>
+
+    <script>
+      const IDENTITAS = "Anggun Pertiwi – 24611030";
+
+      function loadJSON(path) {
+        return fetch(path).then((r) => {
+          if (!r.ok) throw new Error(path + " HTTP " + r.status);
+          return r.json();
+        });
+      }
+
+      // 1) Inisialisasi peta
+      const map = L.map("map", { zoomControl: true }).setView(
+        [-8.65, 117.35],
+        8
+      );
+
+      // 2) Basemap
+      const positron = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        {
+          maxZoom: 20,
+          attribution: `Basemap © CARTO | Dibuat oleh: ${IDENTITAS}`,
+        }
+      );
+
+      const osm = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution: `Basemap © OpenStreetMap | Dibuat oleh: ${IDENTITAS}`,
+        }
+      );
+
+      const esriSat = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution: `Imagery © Esri | Dibuat oleh: ${IDENTITAS}`,
+        }
+      );
+
+      const esriTopo = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom: 19,
+          attribution: `Basemap © Esri (Topo) | Dibuat oleh: ${IDENTITAS}`,
+        }
+      );
+
+      positron.addTo(map);
+
+      // 3) Skala
+      L.control
+        .scale({ metric: true, imperial: false, position: "bottomright" })
+        .addTo(map);
+
+      // 4) Arah mata angin (gambar)
+      const NorthControl = L.Control.extend({
+        options: { position: "topright" },
+        onAdd: function () {
+          const div = L.DomUtil.create("div", "north-arrow-img");
+          div.innerHTML = `<img src="assets/mata_angin.jpg" alt="North Arrow">`;
+          L.DomEvent.disableClickPropagation(div);
+          return div;
+        },
+      });
+      map.addControl(new NorthControl());
+
+      // 5) Tombol HOME
+      let lastBounds = null;
+      const HomeControl = L.Control.extend({
+        options: { position: "topleft" },
+        onAdd: function () {
+          const div = L.DomUtil.create("div", "home-btn");
+          div.innerHTML = "Home";
+          div.onclick = () => {
+            if (lastBounds) map.fitBounds(lastBounds, { padding: [40, 40] });
+            else map.setView([-8.65, 117.35], 8);
+          };
+          return div;
+        },
+      });
+      map.addControl(new HomeControl());
+
+      // 6) ICON LOKAL
+      const iconRS = L.icon({
+        iconUrl: "assets/rs_logo.jpg",
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -28],
+      });
+
+      const iconPus = L.icon({
+        iconUrl: "assets/puskesmas_logo.jpg",
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -28],
+      });
+
+      const layerRS = L.layerGroup().addTo(map);
+      const layerPus = L.layerGroup().addTo(map);
+
+      // 7) Border NTB
+      const borderStyle = {
+        color: "#16a34a",
+        weight: 2.5,
+        fillColor: "#86efac",
+        fillOpacity: 0.14,
+      };
+
+      loadJSON("./ntb_border.geojson")
+        .then((geo) => {
+          L.geoJSON(geo, { style: borderStyle }).addTo(map);
+        })
+        .catch((err) => console.warn("Border skip:", err.message));
+
+      /* =========================================================
+         CHOROPLETH KAB/KOTA + KLIK WARNA BERUBAH
+      ========================================================= */
+      const FIELD_NAMA = "kab_kota";
+
+      const KABKOTA_COLORS = {
+        "Kota Mataram": "#f87171",
+        "Lombok Barat": "#60a5fa",
+        "Lombok Tengah": "#4ade80",
+        "Lombok Timur": "#facc15",
+        "Lombok Utara": "#a78bfa",
+        Sumbawa: "#fb7185",
+        "Sumbawa Barat": "#22d3ee",
+        Dompu: "#fb923c",
+        Bima: "#c084fc",
+        "Kota Bima": "#84cc16",
+      };
+
+      function colorByName(nama) {
+        return KABKOTA_COLORS[nama] || "#94a3b8";
+      }
+
+      let kabkotaLayer = null;
+      let selectedKabKotaLayer = null;
+
+      function styleKabKota(feature) {
+        const p = feature.properties || {};
+        const nama =
+          p[FIELD_NAMA] || p.nama || p.KAB_KOTA || p.kab_kota || "Kab/Kota";
+        return {
+          color: "#111827",
+          weight: 2,
+          opacity: 1,
+          fillColor: colorByName(nama),
+          fillOpacity: 0.25,
+        };
+      }
+
+      function highlightKabKota(e) {
+        const layer = e.target;
+        layer.setStyle({ weight: 3, fillOpacity: 0.55 });
+        layer.bringToFront();
+      }
+
+      function resetHighlightKabKota(e) {
+        if (!kabkotaLayer) return;
+        if (selectedKabKotaLayer && e.target === selectedKabKotaLayer) return;
+        kabkotaLayer.resetStyle(e.target);
+      }
+
+      function clickSelectKabKota(e) {
+        const layer = e.target;
+
+        if (selectedKabKotaLayer && kabkotaLayer) {
+          kabkotaLayer.resetStyle(selectedKabKotaLayer);
+        }
+
+        selectedKabKotaLayer = layer;
+
+        layer.setStyle({
+          weight: 4,
+          color: "#0b1223",
+          fillOpacity: 0.75,
+        });
+
+        layer.bringToFront();
+        map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+      }
+
+      loadJSON("./ntb_border.geojson")
+        .then((geo) => {
+          if (kabkotaLayer) map.removeLayer(kabkotaLayer);
+
+          kabkotaLayer = L.geoJSON(geo, {
+            style: styleKabKota,
+            onEachFeature: (feature, layer) => {
+              const p = feature.properties || {};
+              const nama =
+                p[FIELD_NAMA] ||
+                p.nama ||
+                p.KAB_KOTA ||
+                p.kab_kota ||
+                "Kab/Kota";
+              layer.bindTooltip(nama, { sticky: true });
+              layer.on({
+                mouseover: highlightKabKota,
+                mouseout: resetHighlightKabKota,
+                click: clickSelectKabKota,
+              });
+            },
+          }).addTo(map);
+        })
+        .catch((err) => console.warn("Choropleth gagal:", err.message));
+
+      /* =========================================================
+         ✅ PANEL LEGENDA KIRI (SATU) + SCROLL
+      ========================================================= */
+      const panelLegend = L.control({ position: "bottomleft" });
+      panelLegend.onAdd = function () {
+        const div = L.DomUtil.create("div", "legend-panel");
+
+        div.innerHTML = `
+  <div class="legend-title-big">LEGENDA PETA</div>
+
+  <div id="legendKabkotaBig"></div>
+
+  <div class="legend-subtitle">Legenda Faskes</div>
+  <div class="legend-row-mini">
+    <img class="legend-icon" src="assets/rs_logo.jpg" />
+    <b>Rumah Sakit</b>
+  </div>
+  <div class="legend-row-mini">
+    <img class="legend-icon" src="assets/puskesmas_logo.jpg" />
+    <b>Puskesmas</b>
+  </div>
+
+  <button class="legend-reset-big" id="btnResetBig">RESET PILIHAN</button>
+`;
+
+        L.DomEvent.disableClickPropagation(div);
+        return div;
+      };
+      panelLegend.addTo(map);
+
+      function renderLegendKabkotaBig() {
+        const holder = document.getElementById("legendKabkotaBig");
+        if (!holder) return;
+
+        const entries = Object.entries(KABKOTA_COLORS);
+
+        holder.innerHTML = entries
+          .map(
+            ([nama, col]) => `
+            <div class="legend-item-big" data-nama="${nama}">
+              <span class="legend-chip-big" style="background:${col}"></span>
+              <span class="legend-text-big">${nama}</span>
+            </div>
+          `
+          )
+          .join("");
+
+        // ✅ FIX: klik legend tetap bisa walau di geojson tertulis "Kabupaten ..." / "Kota ..."
+        holder.querySelectorAll(".legend-item-big").forEach((el) => {
+          el.addEventListener("click", () => {
+            const targetNama = (el.getAttribute("data-nama") || "").trim();
+            if (!kabkotaLayer) return;
+
+            const norm = (s) =>
+              (s || "").toLowerCase().replace(/\s+/g, " ").trim();
+            const isKota = (s) => /\bkota\b/i.test(s);
+
+            // 1) Kumpulin kandidat yang namanya cocok (normalisasi)
+            const candidates = [];
+            kabkotaLayer.eachLayer((lyr) => {
+              const p = lyr.feature?.properties || {};
+              const namaRaw = (
+                p[FIELD_NAMA] ||
+                p.nama ||
+                p.KAB_KOTA ||
+                p.kab_kota ||
+                ""
+              ).trim();
+              if (norm(namaRaw) === norm(targetNama)) {
+                candidates.push({ lyr, namaRaw });
+              }
+            });
+
+            // 2) Kalau ada lebih dari 1 kandidat:
+            //    - kalau target ada kata "Kota" -> pilih yang Kota
+            //    - kalau target TIDAK ada kata "Kota" -> pilih yang BUKAN Kota
+            let chosen = null;
+
+            if (candidates.length === 1) {
+              chosen = candidates[0];
+            } else if (candidates.length > 1) {
+              if (isKota(targetNama)) {
+                chosen =
+                  candidates.find((c) => isKota(c.namaRaw)) || candidates[0];
+              } else {
+                chosen =
+                  candidates.find((c) => !isKota(c.namaRaw)) || candidates[0];
+              }
+            }
+
+            // 3) Kalau belum ketemu (misalnya geojson pakai "Kabupaten Bima")
+            if (!chosen) {
+              kabkotaLayer.eachLayer((lyr) => {
+                const p = lyr.feature?.properties || {};
+                const namaRaw = (
+                  p[FIELD_NAMA] ||
+                  p.nama ||
+                  p.KAB_KOTA ||
+                  p.kab_kota ||
+                  ""
+                ).trim();
+
+                // khusus kasus Bima biar ga lari ke Kota Bima
+                if (
+                  norm(targetNama) === "bima" &&
+                  !isKota(namaRaw) &&
+                  norm(namaRaw).includes("bima")
+                ) {
+                  chosen = { lyr, namaRaw };
+                }
+                if (
+                  norm(targetNama) === "kota bima" &&
+                  isKota(namaRaw) &&
+                  norm(namaRaw).includes("bima")
+                ) {
+                  chosen = { lyr, namaRaw };
+                }
+              });
+            }
+
+            if (chosen) clickSelectKabKota({ target: chosen.lyr });
+          });
+        });
+
+        const btn = document.getElementById("btnResetBig");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            if (selectedKabKotaLayer && kabkotaLayer) {
+              kabkotaLayer.resetStyle(selectedKabKotaLayer);
+              selectedKabKotaLayer = null;
+            }
+
+            if (lastBounds) map.fitBounds(lastBounds, { padding: [40, 40] });
+            else map.setView([-8.65, 117.35], 8);
+          });
+        }
+      }
+
+      renderLegendKabkotaBig();
+
+      /* =========================================================
+         DESKRIPSI FOOTER
+      ========================================================= */
+      const DESKRIPSI_LENGKAP = `
+Peta ini merupakan WebGIS persebaran fasilitas kesehatan di Provinsi Nusa Tenggara Barat (NTB),
+yang menampilkan Rumah Sakit (RS) dan Puskesmas berdasarkan titik koordinat hasil pencatatan dari Google Maps.
+Setiap titik dapat diklik untuk menampilkan informasi nama fasilitas, jenis fasilitas, alamat, serta tautan menuju Google Maps.
+      `;
+
+      document.getElementById("descText").innerText = DESKRIPSI_LENGKAP.trim();
+      document.getElementById(
+        "descMeta"
+      ).innerHTML = `<b>Identitas:</b> ${IDENTITAS} &nbsp;|&nbsp; <b>Sumber:</b> Google Maps (koordinat & alamat)`;
+
+      // 8) Load titik faskes
+      loadJSON("./faskes_ntb.geojson")
+        .then((geo) => {
+          layerRS.clearLayers();
+          layerPus.clearLayers();
+
+          const titikLayer = L.geoJSON(geo, {
+            pointToLayer: (feature, latlng) => {
+              const p = feature.properties || {};
+              const jenis = (p.jenis || "").toLowerCase();
+              const isRS = jenis.includes("rumah") || jenis.includes("rs");
+              return L.marker(latlng, { icon: isRS ? iconRS : iconPus });
+            },
+            onEachFeature: (feature, layer) => {
+              const p = feature.properties || {};
+              const jenisText = (p.jenis || "-").toLowerCase();
+              const isRS =
+                jenisText.includes("rumah") || jenisText.includes("rs");
+
+              const query = encodeURIComponent(
+                `${p.nama || ""} ${p.alamat || ""}`.trim()
+              );
+              const gmaps = `https://www.google.com/maps/search/?api=1&query=${query}`;
+
+              layer.bindPopup(`
+                <div style="min-width:260px">
+                  <div class="popup-title">${p.nama || "-"}</div>
+                  <div class="popup-row"><b>Jenis:</b> ${p.jenis || "-"}</div>
+                  <div class="popup-row" style="margin-top:6px"><b>Alamat:</b><br/>${
+                    p.alamat || "-"
+                  }</div>
+                  <div class="pill ${isRS ? "rs" : "pus"}">${
+                isRS ? "RUMAH SAKIT" : "PUSKESMAS"
+              }</div>
+                  <div style="margin-top:10px">
+                    <a class="popup-btn" href="${gmaps}" target="_blank" rel="noopener">
+                      📍 Google Maps
+                    </a>
+                  </div>
+                </div>
+              `);
+
+              if (isRS) layerRS.addLayer(layer);
+              else layerPus.addLayer(layer);
+            },
+          });
+
+          lastBounds = titikLayer.getBounds();
+          map.fitBounds(lastBounds, { padding: [40, 40] });
+
+          const jumlah = geo.features ? geo.features.length : 0;
+          document.getElementById(
+            "descMeta"
+          ).innerHTML = `<b>Jumlah Titik:</b> ${jumlah} &nbsp;|&nbsp; <b>Identitas:</b> ${IDENTITAS} &nbsp;|&nbsp; <b>Sumber:</b> Google Maps`;
+        })
+        .catch((err) => {
+          console.error("GAGAL LOAD TITIK:", err);
+          alert("Gagal load titik: " + err.message);
+        });
+
+      // 9) Legenda (yang kanan bawah tetap dibuat, tapi disembunyikan via CSS supaya tidak dobel)
+      const legend = L.control({ position: "bottomright" });
+      legend.onAdd = function () {
+        const div = L.DomUtil.create("div", "box");
+        div.innerHTML = `
+          <div style="font-weight:900; font-size:14px; margin-bottom:8px; color:#0f172a">Legenda</div>
+          <div class="row"><img class="legend-icon" src="assets/rs_logo.jpg" /> <b>Rumah Sakit</b></div>
+          <div class="row"><img class="legend-icon" src="assets/puskesmas_logo.jpg" /> <b>Puskesmas</b></div>
+          <div class="row"><span class="swatch" style="background:#86efac;"></span> <b>Batas Provinsi NTB</b></div>
+          <div style="margin-top:10px; font-size:12px; opacity:.85">Klik marker untuk melihat detail.</div>
+        `;
+        return div;
+      };
+      legend.addTo(map);
+
+      // 10) Layer control
+      L.control
+        .layers(
+          {
+            "Carto Positron": positron,
+            OpenStreetMap: osm,
+            "Esri Satellite": esriSat,
+            "Esri Topographic": esriTopo,
+          },
+          { "Rumah Sakit": layerRS, Puskesmas: layerPus },
+          { collapsed: false }
+        )
+        .addTo(map);
+    </script>
+  </body>
+</html>
